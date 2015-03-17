@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Caution is a virtue.
+set -o nounset
+set -o errtrace
+set -o errexit
+set -o pipefail
+
+# Require modules
+source "$(dirname $0)/output.sh"
+# source "$(dirname $0)/install.sh"
+# source "$(dirname $0)/list.sh"
+
+EXIT_CODE=0
+
+show_help() {
+  cat << HelpDoc
+Usage: ievms [command] [options]
+
+	install		Install IE VMs.
+
+	list		List available and installed VMs.
+
+	help		Your are looking at it. You can also use
+			'ievms [command] help' for information about sub-commands.
+
+HelpDoc
+  exit $EXIT_CODE
+}
+
+main() {
+	local args=${1:-""}
+
+	case $args in
+		install)
+			shift
+			./install.sh "$@"
+	  	;;
+	  	list)
+			shift
+			./list.sh "$@"
+	  	;;
+	  	""|help)
+			show_help
+	  	;;
+	  	*)
+			puts $(error "Unknown command: '$args'")
+			puts
+			EXIT_CODE=1
+			show_help
+	  	;;
+	esac
+}
+
+main $@
